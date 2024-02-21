@@ -2,7 +2,9 @@ import pandas as pd
 import requests
 from GlobalEntryCenters import ge_centers
 import streamlit as st
-import time
+from datetime import datetime, time
+
+
 
 def count_down(ts, placeholder):
     while ts:
@@ -32,6 +34,16 @@ selected_options = st.multiselect("Select Enrolment Centers", enrolment_centers)
 if(selected_options):
     st.write("Fetching appointment slots")
 
+# Define the time range for the slider
+start_time = time(8, 00)  # 8:00 AM
+end_time = time(18, 00)  # 6:00 PM
+
+# Create a slider for selecting a time window
+time_window = st.slider(
+    "Select a time window:",
+    value=(start_time, end_time),
+    format="HH:mm"  # Optional: format the display of the times
+)
 
 # Create a placeholder for the DataFrame
 dataframe_placeholder = st.empty()
