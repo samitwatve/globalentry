@@ -63,8 +63,8 @@ counter_placeholder = st.empty()
 #         counter_placeholder.write({count_down(300, counter_placeholder)})
         
 
-st.write("Gsheets connection")  
 conn = st.connection("gsheets", type=GSheetsConnection)
-worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/edit?hl=en&pli=1#gid=0"
+worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/"
 existing_data = conn.read(spreadsheet= worksheet_url , usecols = list(range(6)), ttl = 5)
+existing_data = existing_data.dropna(how="all")
 st.dataframe(existing_data)
