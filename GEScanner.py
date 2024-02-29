@@ -99,9 +99,9 @@ if st.button('Submit'):
         user_data = pd.DataFrame(
             [
                 {
-                    "UserEmail" : user_input
-                    "SelectedLocations": selected_options	
-                    "NumLocations": len(selected_options)	
+                    "UserEmail" : user_input,
+                    "SelectedLocations": selected_options,
+                    "NumLocations": len(selected_options),
                     "RegisteredOn": now	
                 }
 
