@@ -4,14 +4,14 @@ from GlobalEntryCenters import ge_centers
 import streamlit as st
 from datetime import datetime, time
 from streamlit_gsheets import GSheetsConnection
-
+import time as tm
 
 def count_down(ts, placeholder):
     while ts:
         mins, secs = divmod(ts, 60)
         time_now = '{:02d}:{:02d}'.format(mins, secs)
         placeholder.write(f"Next update in {ts}")
-        time.sleep(1)
+        tm.sleep(1)
         ts -= 1
     return ts
 
@@ -63,4 +63,8 @@ while True:
         counter_placeholder.write({count_down(300, counter_placeholder)})
         
 
-    
+st.write("Gsheets connection")  
+conn = st.experimental_connection("gsheets", type=GSheetsConnection)
+
+existing_data = conn.read(worksheet = "User_Info", usecols = list(range(6)), ttl = 5)
+st.dataframe(existing_data)
