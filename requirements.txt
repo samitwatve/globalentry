@@ -1,5 +1,5 @@
 streamlit
 altair
 pandas
-streamlit_gsheets
+st-gsheets-connection
 requests
