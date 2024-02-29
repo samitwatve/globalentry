@@ -38,7 +38,7 @@ def add_user_info(existing_data, user_data, conn, worksheet_url):
     try:
         updated_df  = pd.concat([existing_data, user_data], ignore_index=True)
         conn.update(spreadsheet= worksheet_url, data=updated_df)
-        st.success("Successfully updated user data!")
+        
     except Exception as e:
         st.error(f"Failed to update user data due to {e}")
 
@@ -47,7 +47,7 @@ st.title("Global Entry Appointment Scanner")
 enrolment_centers = df["name"].to_list()
 
 # Create the multiselect dropdown
-selected_options = st.multiselect("Select Enrolment Centers", enrolment_centers)
+selected_options = st.multiselect("Select Enrollment Centers", enrolment_centers)
 
 
 # # Define the time range for the slider
@@ -96,21 +96,25 @@ if st.button('Submit'):
         now = datetime.now()
         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")  # Format the timestamp as you like
         
-        user_data = pd.DataFrame(
-            [
-                {
-                    "UserEmail" : user_input,
-                    "SelectedLocations": selected_options,
-                    "NumLocations": len(selected_options),
-                    "RegisteredOn": now	
-                }
+        if selected_options:
+            user_data = pd.DataFrame(
+                [
+                    {
+                        "UserEmail" : user_input,
+                        "SelectedLocations": selected_options,
+                        "NumLocations": len(selected_options),
+                        "RegisteredOn": now	
+                    }
 
-            ]
+                ]
 
-        )
-        st.dataframe(user_data)
+            )
+            st.dataframe(user_data)
+        else:
+            st.error("Please select at least one enrollment center!")
 
         if add_user_info(existing_data, user_data, conn, worksheet_url):
+            st.success("Successfully updated user data!")
             st.dataframe(existing_data)
         
 
