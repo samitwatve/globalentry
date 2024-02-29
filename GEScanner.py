@@ -5,6 +5,7 @@ import streamlit as st
 from datetime import datetime, time
 from streamlit_gsheets import GSheetsConnection
 import time as tm
+import re
 
 def count_down(ts, placeholder):
     while ts:
@@ -24,6 +25,14 @@ def fetch_slots():
     else:
         return []
 
+def is_valid_email(email):
+    # Regular expression for validating an Email
+    regex = r'^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    # If the string matches the regex, it is a valid email
+    if re.fullmatch(regex, email):
+        return True
+    else:
+        return False
 
 df = pd.json_normalize(ge_centers)
 st.title("Global Entry Appointment Scanner") 
@@ -61,7 +70,17 @@ counter_placeholder = st.empty()
 #     if(selected_options):
 #         dataframe_placeholder.write(filtered_df)
 #         counter_placeholder.write({count_down(300, counter_placeholder)})
-        
+
+# Create an input box where users can enter an email address
+user_input = st.text_input("Enter your email address")
+
+# Create a submit button
+if st.button('Submit'):
+    # Check if the email entered is valid
+    if is_valid_email(user_input):
+        st.success(f'You entered a valid email: {user_input}')
+    else:
+        st.error('This is not a valid email address. Please try again.')
 
 conn = st.connection("gsheets", type=GSheetsConnection)
 worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/"
