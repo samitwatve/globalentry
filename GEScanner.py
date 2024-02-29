@@ -3,7 +3,7 @@ import requests
 from GlobalEntryCenters import ge_centers
 import streamlit as st
 from datetime import datetime, time
-
+from streamlit_gsheets import GSheetsConnection
 
 
 def count_down(ts, placeholder):
