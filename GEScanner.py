@@ -49,22 +49,22 @@ time_window = st.slider(
 dataframe_placeholder = st.empty()
 counter_placeholder = st.empty()
 
-while True:
-    found_slots = pd.json_normalize(fetch_slots())
-    final_df = pd.merge(found_slots, df, left_on='locationId', right_on='id', how='inner')[["locationId", "startTimestamp", "name"]]
-    final_df["startTimestamp"] = pd.to_datetime(final_df["startTimestamp"])
-    final_df["startTimestamp"] = final_df["startTimestamp"].dt.strftime('%B, %d %I:%M %p')
-    final_df["locationId"] = final_df["locationId"].astype(str)
-    final_df = final_df[["name", "locationId", "startTimestamp"]]
-    final_df.columns = ["Enrolment Center", "Location ID", "Start Time"]
-    filtered_df = final_df[final_df["Enrolment Center"].isin(selected_options)]
-    if(selected_options):
-        dataframe_placeholder.write(filtered_df)
-        counter_placeholder.write({count_down(300, counter_placeholder)})
+# while True:
+#     found_slots = pd.json_normalize(fetch_slots())
+#     final_df = pd.merge(found_slots, df, left_on='locationId', right_on='id', how='inner')[["locationId", "startTimestamp", "name"]]
+#     final_df["startTimestamp"] = pd.to_datetime(final_df["startTimestamp"])
+#     final_df["startTimestamp"] = final_df["startTimestamp"].dt.strftime('%B, %d %I:%M %p')
+#     final_df["locationId"] = final_df["locationId"].astype(str)
+#     final_df = final_df[["name", "locationId", "startTimestamp"]]
+#     final_df.columns = ["Enrolment Center", "Location ID", "Start Time"]
+#     filtered_df = final_df[final_df["Enrolment Center"].isin(selected_options)]
+#     if(selected_options):
+#         dataframe_placeholder.write(filtered_df)
+#         counter_placeholder.write({count_down(300, counter_placeholder)})
         
 
 st.write("Gsheets connection")  
-conn = st.experimental_connection("gsheets", type=GSheetsConnection)
-
-existing_data = conn.read(worksheet = "User_Info", usecols = list(range(6)), ttl = 5)
+conn = st.connection("gsheets", type=GSheetsConnection)
+worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/edit?hl=en&pli=1#gid=0"
+existing_data = conn.read(spreadsheet= worksheet_url , usecols = list(range(6)), ttl = 5)
 st.dataframe(existing_data)
