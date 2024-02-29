@@ -48,8 +48,7 @@ enrolment_centers = df["name"].to_list()
 
 # Create the multiselect dropdown
 selected_options = st.multiselect("Select Enrolment Centers", enrolment_centers)
-if(selected_options):
-    st.write("Fetching appointment slots")
+
 
 # # Define the time range for the slider
 # start_time = time(8, 00)  # 8:00 AM
@@ -96,6 +95,7 @@ if st.button('Submit'):
         st.success(f'You entered a valid email: {user_input}')
         now = datetime.now()
         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")  # Format the timestamp as you like
+        
         user_data = pd.DataFrame(
             [
                 {
@@ -108,6 +108,8 @@ if st.button('Submit'):
             ]
 
         )
+        st.dataframe(user_data)
+
         if add_user_info(existing_data, user_data, conn):
             st.dataframe(existing_data)
         
