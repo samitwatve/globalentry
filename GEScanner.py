@@ -34,10 +34,10 @@ def is_valid_email(email):
     else:
         return False
     
-def add_user_info(existing_data, user_data, conn):
+def add_user_info(existing_data, user_data, conn, worksheet_url):
     try:
         updated_df  = pd.concat([existing_data, user_data], ignore_index=True)
-        conn.update(data=updated_df)
+        conn.update(spreadsheet= worksheet_url, data=updated_df)
         st.success("Successfully updated user data!")
     except Exception as e:
         st.error(f"Failed to update user data due to {e}")
@@ -110,7 +110,7 @@ if st.button('Submit'):
         )
         st.dataframe(user_data)
 
-        if add_user_info(existing_data, user_data, conn):
+        if add_user_info(existing_data, user_data, conn, worksheet_url):
             st.dataframe(existing_data)
         
 
