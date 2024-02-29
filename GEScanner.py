@@ -38,7 +38,8 @@ def add_user_info(existing_data, user_data, conn, worksheet_url):
     try:
         updated_df  = pd.concat([existing_data, user_data], ignore_index=True)
         conn.update(spreadsheet= worksheet_url, data=updated_df)
-        
+        return updated_df
+    
     except Exception as e:
         st.error(f"Failed to update user data due to {e}")
 
@@ -113,9 +114,11 @@ if st.button('Submit'):
         else:
             st.error("Please select at least one enrollment center!")
 
-        if add_user_info(existing_data, user_data, conn, worksheet_url):
+        updated_df = add_user_info(existing_data, user_data, conn, worksheet_url)
+
+        if updated_df:
             st.success("Successfully updated user data!")
-            st.dataframe(existing_data)
+            st.dataframe(updated_df)
         
 
     else:
