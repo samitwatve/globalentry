@@ -33,6 +33,14 @@ def is_valid_email(email):
         return True
     else:
         return False
+    
+def add_user_info(existing_data, user_data, conn):
+    try:
+        updated_df  = pd.concat([existing_data, user_data], ignore_index=True)
+        conn.update(data=updated_df)
+        st.success("Successfully updated user data!")
+    except Exception as e:
+        st.error(f"Failed to update user data due to {e}")
 
 df = pd.json_normalize(ge_centers)
 st.title("Global Entry Appointment Scanner") 
@@ -71,6 +79,13 @@ counter_placeholder = st.empty()
 #         dataframe_placeholder.write(filtered_df)
 #         counter_placeholder.write({count_down(300, counter_placeholder)})
 
+
+conn = st.connection("gsheets", type=GSheetsConnection)
+worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/"
+existing_data = conn.read(spreadsheet= worksheet_url , usecols = list(range(6)), ttl = 5)
+existing_data = existing_data.dropna(how="all")
+
+
 # Create an input box where users can enter an email address
 user_input = st.text_input("Enter your email address")
 
@@ -79,11 +94,26 @@ if st.button('Submit'):
     # Check if the email entered is valid
     if is_valid_email(user_input):
         st.success(f'You entered a valid email: {user_input}')
+        now = datetime.now()
+        timestamp = now.strftime("%Y-%m-%d %H:%M:%S")  # Format the timestamp as you like
+        user_data = pd.DataFrame(
+            [
+                {
+                    "UserEmail" : user_input
+                    "SelectedLocations": selected_options	
+                    "NumLocations": len(selected_options)	
+                    "RegisteredOn": now	
+                }
+
+            ]
+
+        )
+        add_user_info(existing_data, user_data, conn)
+        
+
     else:
         st.error('This is not a valid email address. Please try again.')
 
-conn = st.connection("gsheets", type=GSheetsConnection)
-worksheet_url = "https://docs.google.com/spreadsheets/d/1G_-NCxfPZmYD7uuNxfcSObmGXn_aDSXKHy388GgHNTo/"
-existing_data = conn.read(spreadsheet= worksheet_url , usecols = list(range(6)), ttl = 5)
-existing_data = existing_data.dropna(how="all")
+
+
 st.dataframe(existing_data)
