@@ -42,7 +42,8 @@ def add_user_info(existing_data, user_data, conn, worksheet_url):
     
     except Exception as e:
         st.error(f"Failed to update user data due to {e}")
-
+        return None
+    
 df = pd.json_normalize(ge_centers)
 st.title("Global Entry Appointment Scanner") 
 enrolment_centers = df["name"].to_list()
@@ -116,10 +117,9 @@ if st.button('Submit'):
 
         updated_df = add_user_info(existing_data, user_data, conn, worksheet_url)
 
-        if updated_df:
+        if updated_df is not None:
             st.success("Successfully updated user data!")
             st.dataframe(updated_df)
-        
 
     else:
         st.error('This is not a valid email address. Please try again.')
